@@ -6,7 +6,7 @@ this specification does not map them into a `MeshError`.
 
 **Reporting.** A `ROUTE` handler reports an application failure by producing a `MeshError` in place of a response, and a
 language-specific implementation should provide an idiomatic way of doing this. The `RPCService` then sends a reply whose
-payload is the encoded `google.rpc.Status` and whose metadata carries `Grpc-Status` set to the code as a decimal integer.
+payload is the encoded `google.rpc.Status` and whose metadata carries `Mesh-Status` set to the code as a decimal integer.
 A request that does not decode as the method's input type, and a response that does not encode, are reported the same way
 as `INTERNAL`, and the handler is not called for a request that does not decode. A `ROUTE` handler that fails in any
 other way is reported as `UNKNOWN` with the failure's text as the message.
@@ -15,8 +15,9 @@ A `TOPIC` handler has no caller, so it handles application errors itself. Nothin
 what an implementation does when one fails, or when a message does not decode as the method's input type, is documented
 by that implementation.
 
-**Decoding.** An `RPCClient` reads `Grpc-Status` from the reply metadata before touching the payload. If it is set, it assumes
-the payload is a `google.rpc.Status` and a `MeshError` is produced and surfaced accordingly. If it is not set, it assumes the
+**Decoding.** An `RPCClient` reads `Mesh-Status` from the reply metadata before touching the payload, or the deprecated
+`Grpc-Status` described under [Deprecated Keys](encoding.md#deprecated-keys) when the reply has no `Mesh-Status`. If either is set, it assumes
+the payload is a `google.rpc.Status` and a `MeshError` is produced and surfaced accordingly. If neither is set, it assumes the
 payload is the method's response type and decodes it normally. A payload that does not decode as the expected type produces
 an `INTERNAL` `MeshError`, and so does a request that does not encode.
 

@@ -16,7 +16,7 @@ is handled behind the scenes by the `RPCClient` and `RPCService` types described
 on `RPCClient` types and the `Endpoint` and `Subscriber` handlers held by `RPCService` types only deal with the generated
 types.
 
-A Service Mesh API `Message` created from a serialized generated type carries `Content-Type: application/x-protobuf` in
+A Service Mesh API `Message` created from a serialized generated type carries `Mesh-Content-Type: application/x-protobuf` in
 its metadata.
 
 ## Protobuf Services

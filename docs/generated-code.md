@@ -55,7 +55,8 @@ described under [Registry](runtime-types.md#registry), and without either, the r
 An application implements only the method handlers it intends to serve. Decoding the inbound Service Mesh API `Message`
 into the proper type, and encoding a response type back into a `Message` is handled automatically so that the
 application doesn't need to touch the underlying layer. A `ROUTE` handler can set metadata on its reply, and the
-library's `Content-Type` and `Grpc-Status` keys take precedence over the handler's; each implementation documents how.
+library's `Mesh-Content-Type` and `Mesh-Status` keys, described under [Metadata Keys](encoding.md#metadata-keys), take
+precedence over the handler's; each implementation documents how.
 
 An `RPCService` type keeps the name of the service it is generated from, such as `OrderService`. A root file may
 re-export it under a prefixed name, as described under [Root Package](#root-package), and the type itself keeps its name.

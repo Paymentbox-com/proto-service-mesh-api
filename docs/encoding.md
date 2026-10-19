@@ -6,3 +6,31 @@ the scenes. The `rpc` methods generated on `RPCClient` types accept the generate
 types, but serialize them into bytes when constructing the Service Mesh API `Message` object that gets passed to the
 transport-specific `Client`. The same happens for `RPCService` type handlers, which are wrapped with logic that deserializes
 the Service Mesh API `Message` into the proper typed generated message, and serializes any replies that are returned.
+
+## Metadata Keys
+
+This specification defines two `Message` metadata keys. Both start with `Mesh-`, the prefix the Service Mesh API
+Specification reserves for transport and protocol layers.
+
+| key                 | carried by                                   | value                                                    |
+|---------------------|----------------------------------------------|----------------------------------------------------------|
+| `Mesh-Content-Type` | every message an implementation sends        | `application/x-protobuf`                                 |
+| `Mesh-Status`       | a reply that reports a `MeshError`           | the `google.rpc.Code` as a decimal integer               |
+
+An implementation sets both keys itself and drops values for them from the metadata an application gives it, on
+requests, publishes, and replies. A successful reply carries no `Mesh-Status`.
+
+## Deprecated Keys
+
+Implementations of versions before v0.12.0 of this specification send `Content-Type` in place of `Mesh-Content-Type`
+and `Grpc-Status` in place of `Mesh-Status`, with the same values. Those keys are deprecated, and a later version of
+this specification removes them. Until then, implementations handle them as follows:
+
+- A request that carries `Content-Type` without `Mesh-Content-Type` comes from an older implementation. Its reply also
+  carries `Content-Type`, and `Grpc-Status` beside `Mesh-Status` when it reports a `MeshError`.
+- No other message carries `Content-Type` or `Grpc-Status`. An implementation drops values for them from application
+  metadata, as it does for the `Mesh-` keys.
+- An `RPCClient` reads `Grpc-Status` when a reply has no `Mesh-Status`.
+- A received message that carries `Content-Type` without `Mesh-Content-Type`, or `Grpc-Status` without `Mesh-Status`,
+  produces a warning naming the key and the `Target`. Each implementation documents where the warning goes and how
+  often it repeats.

@@ -30,7 +30,7 @@ For implementing this specification in a language:
 
 - [Generated Code](docs/generated-code.md): the Targets, ServiceMaps, RPCService, and RPCClient types the generator writes
 - [Runtime Types](docs/runtime-types.md): TransportRouter, Registry, RPCRuntime, and MeshError
-- [Encoding and Decoding](docs/encoding.md): how generated types become Service Mesh API messages
+- [Encoding and Decoding](docs/encoding.md): how generated types become Service Mesh API messages, and the metadata keys they carry
 - [Error Handling](docs/error-handling.md): how failures travel between handlers and callers
 
 ## Implementations
