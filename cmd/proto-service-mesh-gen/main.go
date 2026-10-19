@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/Paymentbox-com/grpc-service-mesh-api/internal/cli"
+	"github.com/Paymentbox-com/proto-service-mesh-api/internal/cli"
 )
 
 func main() {

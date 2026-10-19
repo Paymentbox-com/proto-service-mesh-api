@@ -1,7 +1,7 @@
 # Protobuf
 
 
-The only inputs required for the gRPC Service Mesh API are `.proto` files and the descriptors `protoc` produces from
+The only inputs required for the Proto Service Mesh API are `.proto` files and the descriptors `protoc` produces from
 them. The generator, a Go program, reads those descriptors to write the service mesh code for every language, and the
 standard `protoc` plugin or built-in generator for each language writes the message types. The standard elements of a
 `.proto` file are translated into Service Mesh API primitives as described below. In addition, a few [options](options.md) are defined to further control how the `.proto` files are

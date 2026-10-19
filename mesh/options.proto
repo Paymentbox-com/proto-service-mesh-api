@@ -1,4 +1,4 @@
-// Custom options defined by the gRPC Service Mesh API.
+// Custom options defined by the Proto Service Mesh API.
 // Definitions projects import this file unchanged.
 syntax = "proto3";
 
@@ -6,7 +6,7 @@ package mesh;
 
 import "google/protobuf/descriptor.proto";
 
-option go_package = "github.com/Paymentbox-com/grpc-service-mesh-go/meshoptions";
+option go_package = "github.com/Paymentbox-com/proto-service-mesh-go/meshoptions";
 
 // Kind says whether a method replies.
 enum Kind {

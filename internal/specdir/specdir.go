@@ -1,6 +1,6 @@
 // Package specdir finds the directory of this module that holds
 // mesh/options.proto, the directory the generator puts on every protoc run's
-// proto path and grpc-service-mesh-gen proto-path prints.
+// proto path and proto-service-mesh-gen proto-path prints.
 package specdir
 
 import (
@@ -15,7 +15,7 @@ import (
 )
 
 // Module is the path of the module that holds the specification's protos.
-const Module = "github.com/Paymentbox-com/grpc-service-mesh-api"
+const Module = "github.com/Paymentbox-com/proto-service-mesh-api"
 
 // optionsProto is the file the directory must hold.
 const optionsProto = "mesh/options.proto"

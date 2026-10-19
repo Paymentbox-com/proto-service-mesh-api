@@ -30,7 +30,7 @@ func TestGoFile_InconsistentGoPackage(t *testing.T) {
 
 func TestGoFile_PathAndPackageName(t *testing.T) {
 	p, src := render(t, map[string]string{"shop/deployment.proto": shopDeployment, "shop/order.proto": shopService}, GoFile)
-	if p != "shop/shop.grpcmesh.go" {
+	if p != "shop/shop.protomesh.go" {
 		t.Fatalf("path %q", p)
 	}
 	mustContain(t, src, "\npackage shop\n")
@@ -57,7 +57,7 @@ service PingService { rpc Ping(google.protobuf.Empty) returns (google.protobuf.E
 	}, GoFile)
 	mustContain(t, src, "\t\"google.golang.org/protobuf/types/known/emptypb\"\n")
 	mustContain(t, src, "Ping func(context.Context, *emptypb.Empty) (*emptypb.Empty, error)")
-	mustContain(t, src, "grpcmesh.Call[*emptypb.Empty, *emptypb.Empty](ctx, PingTargets.Ping, req, md)")
+	mustContain(t, src, "protomesh.Call[*emptypb.Empty, *emptypb.Empty](ctx, PingTargets.Ping, req, md)")
 }
 
 func TestGoFile_CrossDirectoryImportOfAPackageNamedAfterSemicolon(t *testing.T) {

@@ -49,9 +49,9 @@ func TestGolden_ExamplesShop(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	shared := []string{"go/shop/shop.grpcmesh.go", "go/servicemaps/servicemaps.go", "ruby/shop/shop_grpcmesh.rb", "ruby/service_maps.rb"}
+	shared := []string{"go/shop/shop.protomesh.go", "go/servicemaps/servicemaps.go", "ruby/shop/shop_protomesh.rb", "ruby/service_maps.rb"}
 	compareGolden(t, golden, plain, shared)
-	compareGolden(t, golden, rooted, append(shared, "go/definitions.grpcmesh.go", "ruby/definitions_grpcmesh.rb"))
+	compareGolden(t, golden, rooted, append(shared, "go/definitions.protomesh.go", "ruby/definitions_protomesh.rb"))
 }
 
 // compareGolden checks that outs are exactly the files in want and that each

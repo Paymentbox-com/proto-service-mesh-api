@@ -1,11 +1,11 @@
 # Generator
 
 
-The generator is the Go program `grpc-service-mesh-gen` in this repository:
+The generator is the Go program `proto-service-mesh-gen` in this repository:
 
 ```sh
-go install github.com/Paymentbox-com/grpc-service-mesh-api/cmd/grpc-service-mesh-gen@v0.10.0
-grpc-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby
+go install github.com/Paymentbox-com/proto-service-mesh-api/cmd/proto-service-mesh-gen@v0.11.0
+proto-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby
 ```
 
 It compiles each language's message code with `protoc`, then writes the mesh code. Each directory that declares a
@@ -28,7 +28,7 @@ the language library and the Service Mesh API contract, and never on a transport
 
 Every `protoc` run imports from `definitions` first, then the specification directory, then each `-I` directory in
 order, and compiles only the files under `definitions`. The specification directory is this repository's module at the
-generator's own version, taken from the Go module cache, and holds `mesh/options.proto`. `grpc-service-mesh-gen
+generator's own version, taken from the Go module cache, and holds `mesh/options.proto`. `proto-service-mesh-gen
 proto-path` prints it. A development build run from a checkout of this repository uses the checkout. A project whose
 files import `google/rpc/*.proto` adds `-I` for a checkout of `github.com/googleapis/googleapis`.
 
@@ -38,10 +38,10 @@ The generator's message code is exactly what plain `protoc` writes, so a project
 and run the generator with `--mesh-only` for the rest:
 
 ```sh
-spec="$(grpc-service-mesh-gen proto-path)"
+spec="$(proto-service-mesh-gen proto-path)"
 protoc -I definitions -I "$spec" --go_out=lib/go --go_opt=paths=source_relative $(find definitions -name '*.proto')
 protoc -I definitions -I "$spec" --ruby_out=lib/ruby $(find definitions -name '*.proto')
-grpc-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby --mesh-only
+proto-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby --mesh-only
 ```
 
 The commands list only the files under `definitions`, because the compiled form of `mesh/options.proto` comes from
@@ -81,21 +81,21 @@ Ruby needs no plugin; Ruby support is built into `protoc` itself.
 ### Installing and Running
 
 ```sh
-go install github.com/Paymentbox-com/grpc-service-mesh-api/cmd/grpc-service-mesh-gen@v0.10.0
-grpc-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby
+go install github.com/Paymentbox-com/proto-service-mesh-api/cmd/proto-service-mesh-gen@v0.11.0
+proto-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby
 ```
 
-`go run github.com/Paymentbox-com/grpc-service-mesh-api/cmd/grpc-service-mesh-gen@v0.10.0` runs it without installing.
+`go run github.com/Paymentbox-com/proto-service-mesh-api/cmd/proto-service-mesh-gen@v0.11.0` runs it without installing.
 The flags are described at the [top of this page](#generator).
 
 Each output directory mirrors the definitions tree. For `definitions/shop/order.proto` the generator writes:
 
 ```
 lib/go/shop/order.pb.go             message code
-lib/go/shop/shop.grpcmesh.go        OrderTargets, OrderService, OrderClient
+lib/go/shop/shop.protomesh.go        OrderTargets, OrderService, OrderClient
 lib/go/servicemaps/servicemaps.go   one ServiceMap per transport
 lib/ruby/shop/order_pb.rb           message code
-lib/ruby/shop/shop_grpcmesh.rb      Shop::OrderTargets, Shop::OrderService, Shop::OrderClient
+lib/ruby/shop/shop_protomesh.rb      Shop::OrderTargets, Shop::OrderService, Shop::OrderClient
 lib/ruby/service_maps.rb            one ServiceMap per transport
 ```
 
@@ -107,7 +107,7 @@ Every generated file begins with a `DO NOT EDIT` header, which makes them easy t
 
 ```sh
 grep -rl --include='*.go' --include='*.rb' 'DO NOT EDIT' lib | xargs rm -f
-grpc-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby
+proto-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby
 ```
 
 Generated code should be committed, so the applications that use it need neither `protoc` nor the generator at runtime.

@@ -1,28 +1,28 @@
-// Command grpc-service-mesh-gen generates the gRPC Service Mesh API code of a
-// definitions project: one <dir>.grpcmesh.go and one <dir>_grpcmesh.rb per
+// Command proto-service-mesh-gen generates the Proto Service Mesh API code of a
+// definitions project: one <dir>.protomesh.go and one <dir>_protomesh.rb per
 // directory that declares a service, plus servicemaps/servicemaps.go and
 // service_maps.rb at each language's output root, and, when asked, one root
 // package per language that aliases every generated identifier.
 //
 // Usage:
 //
-//	grpc-service-mesh-gen --definitions <dir> [--go_out=<dir>] [--ruby_out=<dir>] [-I <dir>] [--mesh-only] [--verbose]
-//	grpc-service-mesh-gen --definitions <dir> --go_out=<dir> --ruby_out=<dir> \
+//	proto-service-mesh-gen --definitions <dir> [--go_out=<dir>] [--ruby_out=<dir>] [-I <dir>] [--mesh-only] [--verbose]
+//	proto-service-mesh-gen --definitions <dir> --go_out=<dir> --ruby_out=<dir> \
 //	    --go-root-package <import path[;name]> [--go-root-out=<dir>] --ruby-root-module <Module>
-//	grpc-service-mesh-gen proto-path
+//	proto-service-mesh-gen proto-path
 //
 // At least one of --go_out and --ruby_out is given. For example:
 //
-//	grpc-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby
+//	proto-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby
 //
 // proto-path prints the specification directory, the directory holding
 // mesh/options.proto at this generator's version, and exits 0, or prints the
 // error and exits 1. A release build, installed or run at a version such as
-// @v0.5.1, takes the directory of that version of
-// github.com/Paymentbox-com/grpc-service-mesh-api from the Go module cache
+// @v0.11.0, takes the directory of that version of
+// github.com/Paymentbox-com/proto-service-mesh-api from the Go module cache
 // with go mod download -json. A development build, whose version is (devel)
 // or ends in +dirty, takes the root of the working directory's module from
-// go list -m when that module is github.com/Paymentbox-com/grpc-service-mesh-api,
+// go list -m when that module is github.com/Paymentbox-com/proto-service-mesh-api,
 // and fails otherwise. go is found on PATH.
 //
 // --definitions <dir> names the definitions directory and is required.
@@ -54,11 +54,11 @@
 // --ruby_out <dir>, each request that language and name its output
 // directory, the directory protoc's --go_out or --ruby_out takes. Each
 // definitions directory <path> that declares a service gets
-// <dir>/<path>/<name>.grpcmesh.go or <dir>/<path>/<name>_grpcmesh.rb, where
+// <dir>/<path>/<name>.protomesh.go or <dir>/<path>/<name>_protomesh.rb, where
 // <name> is the last element of <path>, and the per-transport ServiceMaps go
 // to servicemaps/servicemaps.go and service_maps.rb in the output directory.
 //
-// --go-root-package <import path[;name]> also writes <name>.grpcmesh.go in
+// --go-root-package <import path[;name]> also writes <name>.protomesh.go in
 // the --go_out directory, package <name>, aliasing every generated Go identifier of the definitions
 // tree: each message and enum type, each enum value constant, and each
 // RPCService type, client value, and targets value. <name> is the last
@@ -72,7 +72,7 @@
 // as the module root when --go_out is a subdirectory. Needs
 // --go-root-package.
 //
-// --ruby-root-module <Module> also writes <snake_case(Module)>_grpcmesh.rb in
+// --ruby-root-module <Module> also writes <snake_case(Module)>_protomesh.rb in
 // the --ruby_out directory, which requires every generated Ruby file and defines module <Module> with
 // a constant for every top-level message and enum, each RPCService, client,
 // and targets constant, and ServiceMaps. A directory's option

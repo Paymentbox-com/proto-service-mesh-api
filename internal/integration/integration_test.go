@@ -2,7 +2,7 @@
 // examples/shop against the published libraries, and resolves the
 // specification directory of a published version. The tests need network
 // access, protoc, protoc-gen-go, go, and bundle, so they run only with
-// GRPC_SERVICE_MESH_GEN_INTEGRATION set.
+// PROTO_SERVICE_MESH_GEN_INTEGRATION set.
 package integration
 
 import (
@@ -13,8 +13,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Paymentbox-com/grpc-service-mesh-api/internal/cli"
-	"github.com/Paymentbox-com/grpc-service-mesh-api/internal/specdir"
+	"github.com/Paymentbox-com/proto-service-mesh-api/internal/cli"
+	"github.com/Paymentbox-com/proto-service-mesh-api/internal/specdir"
 )
 
 var repoRoot = filepath.Join("..", "..")
@@ -22,8 +22,8 @@ var repoRoot = filepath.Join("..", "..")
 // generate runs the generator on examples with args added.
 func generate(t *testing.T, args ...string) string {
 	t.Helper()
-	if os.Getenv("GRPC_SERVICE_MESH_GEN_INTEGRATION") == "" {
-		t.Skip("set GRPC_SERVICE_MESH_GEN_INTEGRATION=1 to run")
+	if os.Getenv("PROTO_SERVICE_MESH_GEN_INTEGRATION") == "" {
+		t.Skip("set PROTO_SERVICE_MESH_GEN_INTEGRATION=1 to run")
 	}
 	out := t.TempDir()
 	var stdout, stderr bytes.Buffer
@@ -69,7 +69,7 @@ func TestGoOutputVets(t *testing.T) {
 go 1.26.6
 
 require (
-	github.com/Paymentbox-com/grpc-service-mesh-go v0.16.0
+	github.com/Paymentbox-com/proto-service-mesh-go v0.17.0
 	github.com/Paymentbox-com/service-mesh-go v0.2.0
 	google.golang.org/protobuf v1.36.12
 )
@@ -95,7 +95,7 @@ replace example.com/definitions/shop => ../shop
 
 // TestRubyOutputLoads requires the generated files against the published
 // gems and reads the map and a client method back. mesh/options_pb comes
-// from the grpc_service_mesh gem.
+// from the proto_service_mesh gem.
 func TestRubyOutputLoads(t *testing.T) {
 	out := generate(t)
 	ruby := filepath.Join(out, "ruby")
@@ -104,7 +104,7 @@ func TestRubyOutputLoads(t *testing.T) {
 	}
 	write(t, filepath.Join(ruby, "Gemfile"), `source "https://rubygems.org"
 
-gem "grpc_service_mesh", git: "https://github.com/Paymentbox-com/grpc-service-mesh-ruby", tag: "v0.17.0"
+gem "proto_service_mesh", git: "https://github.com/Paymentbox-com/proto-service-mesh-ruby", tag: "v0.18.0"
 gem "service_mesh", git: "https://github.com/Paymentbox-com/service-mesh-ruby", tag: "v0.5.0"
 gem "google-protobuf"
 gem "googleapis-common-protos-types"
@@ -117,7 +117,7 @@ raise "no placed" unless Shop::OrderClient.respond_to?(:placed)
 raise "no mesh_metadata" unless Shop::Order.new.respond_to?(:mesh_metadata)
 raise "rpcs: #{Shop::OrderService.rpcs.keys}" unless Shop::OrderService.rpcs.keys.sort == [:place, :placed]
 options = $LOADED_FEATURES.grep(%r{/mesh/options_pb\.rb\z})
-raise "mesh/options_pb from #{options}" unless options.size == 1 && options[0].end_with?("/lib/mesh/options_pb.rb") && options[0].include?("grpc-service-mesh-ruby")
+raise "mesh/options_pb from #{options}" unless options.size == 1 && options[0].end_with?("/lib/mesh/options_pb.rb") && options[0].include?("proto-service-mesh-ruby")
 puts "loaded"
 `
 	got := sh(t, ruby, "bundle", "exec", "ruby", "-I"+ruby, "-e", script)
@@ -136,7 +136,7 @@ func TestGoRootPackageVets(t *testing.T) {
 go 1.26.6
 
 require (
-	github.com/Paymentbox-com/grpc-service-mesh-go v0.16.0
+	github.com/Paymentbox-com/proto-service-mesh-go v0.17.0
 	github.com/Paymentbox-com/service-mesh-go v0.2.0
 	google.golang.org/protobuf v1.36.12
 )
@@ -166,13 +166,13 @@ func TestRubyRootModuleLoads(t *testing.T) {
 	ruby := filepath.Join(out, "ruby")
 	write(t, filepath.Join(ruby, "Gemfile"), `source "https://rubygems.org"
 
-gem "grpc_service_mesh", git: "https://github.com/Paymentbox-com/grpc-service-mesh-ruby", tag: "v0.17.0"
+gem "proto_service_mesh", git: "https://github.com/Paymentbox-com/proto-service-mesh-ruby", tag: "v0.18.0"
 gem "service_mesh", git: "https://github.com/Paymentbox-com/service-mesh-ruby", tag: "v0.5.0"
 gem "google-protobuf"
 gem "googleapis-common-protos-types"
 `)
 	sh(t, ruby, "bundle", "install", "--quiet")
-	script := `require "definitions_grpcmesh"
+	script := `require "definitions_protomesh"
 raise "no place" unless Definitions::OrderClient.respond_to?(:place)
 raise "Order" unless Definitions::Order.equal?(Shop::Order)
 raise "targets" unless Definitions::OrderTargets::PLACE.segments == ["shop", "OrderService", "Place"]
@@ -186,14 +186,14 @@ puts "loaded"
 }
 
 func TestForVersion_ReleaseTakesTheModuleCache(t *testing.T) {
-	if os.Getenv("GRPC_SERVICE_MESH_GEN_INTEGRATION") == "" {
-		t.Skip("set GRPC_SERVICE_MESH_GEN_INTEGRATION=1 to run")
+	if os.Getenv("PROTO_SERVICE_MESH_GEN_INTEGRATION") == "" {
+		t.Skip("set PROTO_SERVICE_MESH_GEN_INTEGRATION=1 to run")
 	}
-	dir, err := specdir.ForVersion("v0.3.0")
+	dir, err := specdir.ForVersion("v0.11.0")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.HasSuffix(filepath.ToSlash(dir), "/github.com/!paymentbox-com/grpc-service-mesh-api@v0.3.0") {
+	if !strings.HasSuffix(filepath.ToSlash(dir), "/github.com/!paymentbox-com/proto-service-mesh-api@v0.11.0") {
 		t.Fatalf("dir %s", dir)
 	}
 	if _, err := os.Stat(filepath.Join(dir, "mesh", "options.proto")); err != nil {
@@ -202,11 +202,11 @@ func TestForVersion_ReleaseTakesTheModuleCache(t *testing.T) {
 }
 
 func TestForVersion_UnknownReleaseIsAnError(t *testing.T) {
-	if os.Getenv("GRPC_SERVICE_MESH_GEN_INTEGRATION") == "" {
-		t.Skip("set GRPC_SERVICE_MESH_GEN_INTEGRATION=1 to run")
+	if os.Getenv("PROTO_SERVICE_MESH_GEN_INTEGRATION") == "" {
+		t.Skip("set PROTO_SERVICE_MESH_GEN_INTEGRATION=1 to run")
 	}
 	_, err := specdir.ForVersion("v0.0.99")
-	if err == nil || !strings.HasPrefix(err.Error(), "go mod download github.com/Paymentbox-com/grpc-service-mesh-api@v0.0.99: ") {
+	if err == nil || !strings.HasPrefix(err.Error(), "go mod download github.com/Paymentbox-com/proto-service-mesh-api@v0.0.99: ") {
 		t.Fatalf("err %v", err)
 	}
 }

@@ -1,4 +1,4 @@
-// Package gen turns a FileDescriptorSet into the gRPC Service Mesh API's
+// Package gen turns a FileDescriptorSet into the Proto Service Mesh API's
 // generated source files.
 package gen
 
@@ -21,7 +21,7 @@ const (
 )
 
 // Output is one generated file. Path is relative to the language's output
-// root, such as shop/shop.grpcmesh.go. Root marks a root file, the one
+// root, such as shop/shop.protomesh.go. Root marks a root file, the one
 // GoRootPackage or RubyRootModule selects.
 type Output struct {
 	Lang    Lang
@@ -34,10 +34,10 @@ type Output struct {
 type Options struct {
 	Langs []Lang
 	// GoRootPackage, when set, is the import path of the root package, with
-	// an optional ";name" as in go_package. Its <name>.grpcmesh.go at the Go
+	// an optional ";name" as in go_package. Its <name>.protomesh.go at the Go
 	// output root aliases every generated Go identifier.
 	GoRootPackage string
-	// RubyRootModule, when set, is the module whose <snake_case>_grpcmesh.rb
+	// RubyRootModule, when set, is the module whose <snake_case>_protomesh.rb
 	// at the Ruby output root aliases every generated Ruby constant.
 	RubyRootModule string
 }

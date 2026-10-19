@@ -64,7 +64,7 @@ func TestRun_DefinitionsRequired(t *testing.T) {
 
 func TestRun_NoOutputDirectoryIsAUsageError(t *testing.T) {
 	code, stdout, stderr := invoke(t, "--definitions", examples, "--verbose")
-	if code != 2 || stderr != "grpc-service-mesh-gen: pass at least one of --go_out=<dir> and --ruby_out=<dir> (see --help)\n" {
+	if code != 2 || stderr != "proto-service-mesh-gen: pass at least one of --go_out=<dir> and --ruby_out=<dir> (see --help)\n" {
 		t.Fatalf("code %d, stderr %q", code, stderr)
 	}
 	if stdout != "" {
@@ -96,14 +96,14 @@ func TestRun_RubyOutWithSeparateValue(t *testing.T) {
 
 func TestRun_GoRootPackageWithoutGoOutIsAUsageError(t *testing.T) {
 	code, _, stderr := invoke(t, "--definitions", examples, "--ruby_out="+t.TempDir(), "--go-root-package", "example.com/definitions;definitions")
-	if code != 2 || stderr != "grpc-service-mesh-gen: --go-root-package applies to Go, which needs --go_out (see --help)\n" {
+	if code != 2 || stderr != "proto-service-mesh-gen: --go-root-package applies to Go, which needs --go_out (see --help)\n" {
 		t.Fatalf("code %d, stderr %q", code, stderr)
 	}
 }
 
 func TestRun_RubyRootModuleWithoutRubyOutIsAUsageError(t *testing.T) {
 	code, _, stderr := invoke(t, "--definitions", examples, "--go_out="+t.TempDir(), "--ruby-root-module", "Definitions")
-	if code != 2 || stderr != "grpc-service-mesh-gen: --ruby-root-module applies to Ruby, which needs --ruby_out (see --help)\n" {
+	if code != 2 || stderr != "proto-service-mesh-gen: --ruby-root-module applies to Ruby, which needs --ruby_out (see --help)\n" {
 		t.Fatalf("code %d, stderr %q", code, stderr)
 	}
 }
@@ -135,7 +135,7 @@ func TestRun_GoOutAloneGeneratesOnlyGo(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("code %d, stderr %q", code, stderr)
 	}
-	want := []string{"go/servicemaps/servicemaps.go", "go/shop/deployment.pb.go", "go/shop/order.pb.go", "go/shop/shop.grpcmesh.go"}
+	want := []string{"go/servicemaps/servicemaps.go", "go/shop/deployment.pb.go", "go/shop/order.pb.go", "go/shop/shop.protomesh.go"}
 	if got := files(t, parent); !slices.Equal(got, want) {
 		t.Fatalf("wrote %v, want %v", got, want)
 	}
@@ -150,7 +150,7 @@ func TestRun_RubyOutAloneGeneratesOnlyRuby(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("code %d, stderr %q", code, stderr)
 	}
-	want := []string{"ruby/service_maps.rb", "ruby/shop/deployment_pb.rb", "ruby/shop/order_pb.rb", "ruby/shop/shop_grpcmesh.rb"}
+	want := []string{"ruby/service_maps.rb", "ruby/shop/deployment_pb.rb", "ruby/shop/order_pb.rb", "ruby/shop/shop_protomesh.rb"}
 	if got := files(t, parent); !slices.Equal(got, want) {
 		t.Fatalf("wrote %v, want %v", got, want)
 	}
@@ -166,7 +166,7 @@ func TestRun_RootFilesWrittenAtTheOutputDirectories(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("code %d, stderr %q", code, stderr)
 	}
-	for _, p := range []string{filepath.Join(goOut, "definitions.grpcmesh.go"), filepath.Join(rubyOut, "definitions_grpcmesh.rb")} {
+	for _, p := range []string{filepath.Join(goOut, "definitions.protomesh.go"), filepath.Join(rubyOut, "definitions_protomesh.rb")} {
 		if _, err := os.Stat(p); err != nil {
 			t.Errorf("%v", err)
 		}
@@ -181,7 +181,7 @@ func TestRun_GoRootOutPlacesTheGoRootFile(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("code %d, stderr %q", code, stderr)
 	}
-	want := []string{"definitions.grpcmesh.go", "gen/servicemaps/servicemaps.go", "gen/shop/deployment.pb.go", "gen/shop/order.pb.go", "gen/shop/shop.grpcmesh.go"}
+	want := []string{"definitions.protomesh.go", "gen/servicemaps/servicemaps.go", "gen/shop/deployment.pb.go", "gen/shop/order.pb.go", "gen/shop/shop.protomesh.go"}
 	if got := files(t, parent); !slices.Equal(got, want) {
 		t.Fatalf("wrote %v, want %v", got, want)
 	}
@@ -189,7 +189,7 @@ func TestRun_GoRootOutPlacesTheGoRootFile(t *testing.T) {
 
 func TestRun_GoRootOutWithoutRootPackageIsAUsageError(t *testing.T) {
 	code, _, stderr := invoke(t, "--definitions", examples, "--go_out="+t.TempDir(), "--go-root-out="+t.TempDir())
-	if code != 2 || stderr != "grpc-service-mesh-gen: --go-root-out places the root package file, which needs --go-root-package (see --help)\n" {
+	if code != 2 || stderr != "proto-service-mesh-gen: --go-root-out places the root package file, which needs --go-root-package (see --help)\n" {
 		t.Fatalf("code %d, stderr %q", code, stderr)
 	}
 }
@@ -197,7 +197,7 @@ func TestRun_GoRootOutWithoutRootPackageIsAUsageError(t *testing.T) {
 func TestRun_RootPackageErrorExitsOne(t *testing.T) {
 	out := t.TempDir()
 	code, _, stderr := invoke(t, "--definitions", examples, "--go_out="+out, "--go-root-package", "example.com/definitions/shop")
-	want := "grpc-service-mesh-gen: root package shop: shop/deployment.proto generates a package with the same name\n" +
+	want := "proto-service-mesh-gen: root package shop: shop/deployment.proto generates a package with the same name\n" +
 		"root package shop: shop/order.proto generates a package with the same name\n"
 	if code != 1 || stderr != want {
 		t.Fatalf("code %d, stderr:\n%s", code, stderr)
@@ -220,7 +220,7 @@ service OrderService { rpc Watch(Order) returns (stream Order); }
 	}
 	out := t.TempDir()
 	code, _, stderr := invoke(t, "--definitions", defs, "--go_out="+filepath.Join(out, "go"), "--ruby_out="+filepath.Join(out, "ruby"))
-	want := "grpc-service-mesh-gen: shop: no file sets transport; exactly one file directly in shop/ must set option (mesh.transport)\n" +
+	want := "proto-service-mesh-gen: shop: no file sets transport; exactly one file directly in shop/ must set option (mesh.transport)\n" +
 		"shop/order.proto: OrderService.Watch streams; a streaming rpc has no Service Mesh API form\n"
 	if code != 1 || stderr != want {
 		t.Fatalf("code %d, stderr:\n%s", code, stderr)
@@ -236,7 +236,7 @@ func TestRun_NoServiceIsAnError(t *testing.T) {
 		t.Fatal(err)
 	}
 	code, _, stderr := invoke(t, "--definitions", defs, "--go_out="+t.TempDir(), "--ruby_out="+t.TempDir())
-	if code != 1 || stderr != "grpc-service-mesh-gen: no service declared under "+defs+"\n" {
+	if code != 1 || stderr != "proto-service-mesh-gen: no service declared under "+defs+"\n" {
 		t.Fatalf("code %d, stderr %q", code, stderr)
 	}
 }
@@ -247,10 +247,10 @@ func TestRun_DefinitionsRunsProtocAndWritesEverything(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("code %d, stderr:\n%s", code, stderr)
 	}
-	if got, want := files(t, goOut), []string{"servicemaps/servicemaps.go", "shop/deployment.pb.go", "shop/order.pb.go", "shop/shop.grpcmesh.go"}; !slices.Equal(got, want) {
+	if got, want := files(t, goOut), []string{"servicemaps/servicemaps.go", "shop/deployment.pb.go", "shop/order.pb.go", "shop/shop.protomesh.go"}; !slices.Equal(got, want) {
 		t.Errorf("Go wrote %v, want %v", got, want)
 	}
-	if got, want := files(t, rubyOut), []string{"service_maps.rb", "shop/deployment_pb.rb", "shop/order_pb.rb", "shop/shop_grpcmesh.rb"}; !slices.Equal(got, want) {
+	if got, want := files(t, rubyOut), []string{"service_maps.rb", "shop/deployment_pb.rb", "shop/order_pb.rb", "shop/shop_protomesh.rb"}; !slices.Equal(got, want) {
 		t.Errorf("Ruby wrote %v, want %v", got, want)
 	}
 	for _, want := range []string{
@@ -362,7 +362,7 @@ func TestRun_MessageOutputIsWhatPlainProtocWrites(t *testing.T) {
 		}
 	}
 	messages := slices.DeleteFunc(generated, func(p string) bool {
-		return strings.HasSuffix(p, ".grpcmesh.go") || strings.HasSuffix(p, "_grpcmesh.rb") ||
+		return strings.HasSuffix(p, ".protomesh.go") || strings.HasSuffix(p, "_protomesh.rb") ||
 			p == "go/servicemaps/servicemaps.go" || p == "ruby/service_maps.rb"
 	})
 	if !slices.Equal(messages, want) {
@@ -416,7 +416,7 @@ func TestRun_UnresolvedSpecificationDirectoryWithOptionsOnAnIncludePath(t *testi
 
 func TestRun_MissingOptionsProtoIsOneErrorBeforeProtoc(t *testing.T) {
 	code, stdout, stderr := invokeUnresolved(t, "--definitions", examples, "-I", t.TempDir(), "--go_out="+t.TempDir(), "--ruby_out="+t.TempDir(), "--verbose")
-	want := "grpc-service-mesh-gen: mesh/options.proto was not found on any -I path, and the specification directory could not be resolved: go mod download failed\n"
+	want := "proto-service-mesh-gen: mesh/options.proto was not found on any -I path, and the specification directory could not be resolved: go mod download failed\n"
 	if code != 1 || stderr != want {
 		t.Fatalf("code %d, stderr:\n%s", code, stderr)
 	}
@@ -433,8 +433,8 @@ func TestRun_MeshOnlyWritesOnlyTheMeshCode(t *testing.T) {
 		t.Fatalf("code %d, stderr:\n%s", code, stderr)
 	}
 	want := []string{
-		"go/definitions.grpcmesh.go", "go/servicemaps/servicemaps.go", "go/shop/shop.grpcmesh.go",
-		"ruby/definitions_grpcmesh.rb", "ruby/service_maps.rb", "ruby/shop/shop_grpcmesh.rb",
+		"go/definitions.protomesh.go", "go/servicemaps/servicemaps.go", "go/shop/shop.protomesh.go",
+		"ruby/definitions_protomesh.rb", "ruby/service_maps.rb", "ruby/shop/shop_protomesh.rb",
 	}
 	if got := files(t, out); !slices.Equal(got, want) {
 		t.Fatalf("wrote %v, want %v", got, want)
@@ -456,14 +456,14 @@ func TestRun_ProtoPathPrintsTheSpecificationDirectory(t *testing.T) {
 
 func TestRun_ProtoPathFailureExitsOne(t *testing.T) {
 	code, stdout, stderr := invokeUnresolved(t, "proto-path")
-	if code != 1 || stdout != "" || stderr != "grpc-service-mesh-gen: go mod download failed\n" {
+	if code != 1 || stdout != "" || stderr != "proto-service-mesh-gen: go mod download failed\n" {
 		t.Fatalf("code %d, stdout %q, stderr %q", code, stdout, stderr)
 	}
 }
 
 func TestRun_ProtoPathTakesNoArguments(t *testing.T) {
 	code, stdout, stderr := invoke(t, "proto-path", "extra")
-	if code != 2 || stdout != "" || stderr != "grpc-service-mesh-gen: proto-path takes no arguments (see --help)\n" {
+	if code != 2 || stdout != "" || stderr != "proto-service-mesh-gen: proto-path takes no arguments (see --help)\n" {
 		t.Fatalf("code %d, stdout %q, stderr %q", code, stdout, stderr)
 	}
 }

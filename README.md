@@ -1,6 +1,6 @@
-# gRPC Service Mesh API
+# Proto Service Mesh API
 
-The gRPC Service Mesh API is a service mesh protocol layer specification built on the
+The Proto Service Mesh API is a service mesh protocol layer specification built on the
 [Service Mesh API Specification](https://github.com/Paymentbox-com/service-mesh-api) and driven by Google Protocol
 Buffers. It specifies how protobuf message and service definitions are translated into Service Mesh API primitives and
 consumed at the application level.
@@ -13,7 +13,7 @@ transports and language- and transport-specific runtimes.
 
 ## Overview
 
-The gRPC Service Mesh API uses a generator, which reads `protoc` output to generate the necessary code to consume the
+The Proto Service Mesh API uses a generator, which reads `protoc` output to generate the necessary code to consume the
 Service Mesh API. This specification defines how that generator interprets `.proto` files to generate that code. Currently
 it supports Ruby and Go.
 
@@ -24,7 +24,7 @@ For writing and generating definitions:
 - [Protobuf](docs/protobuf.md): how `.proto` messages and services map to Service Mesh API primitives
 - [Options](docs/options.md): `mesh/options.proto` and how definitions use it
 - [Definitions Project Structure](docs/project-structure.md): how a definitions project is laid out and shared
-- [Generator](docs/generator.md): installing and running `grpc-service-mesh-gen`, its flags, and its errors
+- [Generator](docs/generator.md): installing and running `proto-service-mesh-gen`, its flags, and its errors
 
 For implementing this specification in a language:
 
@@ -35,5 +35,5 @@ For implementing this specification in a language:
 
 ## Implementations
 
-- [grpc-service-mesh-go](https://github.com/Paymentbox-com/grpc-service-mesh-go): the Go library, package `grpcmesh`.
-- [grpc-service-mesh-ruby](https://github.com/Paymentbox-com/grpc-service-mesh-ruby): the Ruby library, gem `grpc_service_mesh`.
+- [proto-service-mesh-go](https://github.com/Paymentbox-com/proto-service-mesh-go): the Go library, package `protomesh`.
+- [proto-service-mesh-ruby](https://github.com/Paymentbox-com/proto-service-mesh-ruby): the Ruby library, gem `proto_service_mesh`.

@@ -23,7 +23,7 @@ For the `OrderService` shown under [Options](options.md), in `examples/shop/` wi
 
 ## ServiceMaps
 
-A `ServiceMap` is simply a list of `Targets`, as defined by the Service Mesh API Specification. The gRPC Service Mesh API
+A `ServiceMap` is simply a list of `Targets`, as defined by the Service Mesh API Specification. The Proto Service Mesh API
 requires one `ServiceMap` per `transport`, each holding only the `Targets` using that `transport`. The transport's map is
 what a `Client` for that transport accepts on construction, and a `Runtime` built from that `Client` serves with it.
 
@@ -104,13 +104,13 @@ that re-exports every generated message, enum, service, client, and targets valu
 application imports one package for convenience.
 
 ```sh
-grpc-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby \
+proto-service-mesh-gen --definitions definitions --go_out=lib/go --ruby_out=lib/ruby \
     --go-root-package "example.com/definitions;definitions" --ruby-root-module Definitions
 ```
 
 ```
-lib/go/definitions.grpcmesh.go      type Order = shop.Order, var OrderClient = shop.OrderClient, ...
-lib/ruby/definitions_grpcmesh.rb    Definitions::Order = ::Shop::Order, Definitions::OrderClient = ::Shop::OrderClient, ...
+lib/go/definitions.protomesh.go      type Order = shop.Order, var OrderClient = shop.OrderClient, ...
+lib/ruby/definitions_protomesh.rb    Definitions::Order = ::Shop::Order, Definitions::OrderClient = ::Shop::OrderClient, ...
 ```
 
 The Go root file goes in the `--go_out` directory unless `--go-root-out=<dir>` names another. A module that keeps its
@@ -118,13 +118,13 @@ generated packages under a subdirectory and its root package at the module root 
 writes the root file at the root:
 
 ```sh
-grpc-service-mesh-gen --definitions definitions --go_out=gen --go-root-out=. \
+proto-service-mesh-gen --definitions definitions --go_out=gen --go-root-out=. \
     --go-root-package "example.com/definitions;definitions"
 ```
 
 ```
 gen/shop/order.pb.go                package shop, imported as example.com/definitions/gen/shop
-definitions.grpcmesh.go             package definitions, imported as example.com/definitions
+definitions.protomesh.go             package definitions, imported as example.com/definitions
 ```
 
 Each `go_package` names the subdirectory, as in `option go_package = "example.com/definitions/gen/shop";`.

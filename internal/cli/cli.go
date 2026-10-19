@@ -1,4 +1,4 @@
-// Package cli is grpc-service-mesh-gen's command line.
+// Package cli is proto-service-mesh-gen's command line.
 package cli
 
 import (
@@ -11,20 +11,20 @@ import (
 
 	"google.golang.org/protobuf/types/descriptorpb"
 
-	"github.com/Paymentbox-com/grpc-service-mesh-api/internal/gen"
-	"github.com/Paymentbox-com/grpc-service-mesh-api/internal/protoc"
-	"github.com/Paymentbox-com/grpc-service-mesh-api/internal/specdir"
+	"github.com/Paymentbox-com/proto-service-mesh-api/internal/gen"
+	"github.com/Paymentbox-com/proto-service-mesh-api/internal/protoc"
+	"github.com/Paymentbox-com/proto-service-mesh-api/internal/specdir"
 )
 
 // Usage is the --help text.
-const Usage = `grpc-service-mesh-gen generates the gRPC Service Mesh API code for a
+const Usage = `proto-service-mesh-gen generates the Proto Service Mesh API code for a
 definitions project.
 
 Usage:
-  grpc-service-mesh-gen --definitions <dir> [--go_out=<dir>] [--ruby_out=<dir>] [-I <dir>] [--mesh-only] [--verbose]
-  grpc-service-mesh-gen --definitions <dir> --go_out=<dir> --ruby_out=<dir> \
+  proto-service-mesh-gen --definitions <dir> [--go_out=<dir>] [--ruby_out=<dir>] [-I <dir>] [--mesh-only] [--verbose]
+  proto-service-mesh-gen --definitions <dir> --go_out=<dir> --ruby_out=<dir> \
       --go-root-package <import path[;name]> [--go-root-out=<dir>] --ruby-root-module <Module>
-  grpc-service-mesh-gen proto-path
+  proto-service-mesh-gen proto-path
 
 At least one of --go_out and --ruby_out is given.
 
@@ -33,15 +33,15 @@ Commands:
       Print the specification directory, the directory holding
       mesh/options.proto at this generator's version, and exit 0. On
       failure, print the error and exit 1. Plain protoc takes it as
-        -I "$(grpc-service-mesh-gen proto-path)"
+        -I "$(proto-service-mesh-gen proto-path)"
       A release build, one installed or run at a version such as
-      github.com/Paymentbox-com/grpc-service-mesh-api/cmd/grpc-service-mesh-gen@v0.5.1,
+      github.com/Paymentbox-com/proto-service-mesh-api/cmd/proto-service-mesh-gen@v0.11.0,
       takes the directory of that module version from the Go module cache
       with go mod download -json, downloading it when needed. A development
       build, whose version is (devel) or ends in +dirty, such as go run
-      ./cmd/grpc-service-mesh-gen in a checkout, takes the root of the
+      ./cmd/proto-service-mesh-gen in a checkout, takes the root of the
       working directory's module from go list -m when that module is
-      github.com/Paymentbox-com/grpc-service-mesh-api, and fails otherwise.
+      github.com/Paymentbox-com/proto-service-mesh-api, and fails otherwise.
       go is found on PATH.
 
 Flags:
@@ -71,16 +71,16 @@ Flags:
   --go_out=<dir>, --go_out <dir>
       Generate Go into <dir>, the directory protoc's --go_out takes. Each
       definitions directory <path> that declares a service gets
-      <dir>/<path>/<name>.grpcmesh.go in its generated package, where
+      <dir>/<path>/<name>.protomesh.go in its generated package, where
       <name> is the last element of <path>, and the per-transport
       ServiceMaps go to <dir>/servicemaps/servicemaps.go.
   --ruby_out=<dir>, --ruby_out <dir>
       Generate Ruby into <dir>, the directory protoc's --ruby_out takes. Each
       definitions directory <path> that declares a service gets
-      <dir>/<path>/<name>_grpcmesh.rb, where <name> is the last element of
+      <dir>/<path>/<name>_protomesh.rb, where <name> is the last element of
       <path>, and the per-transport ServiceMaps go to <dir>/service_maps.rb.
   --go-root-package <import path[;name]>
-      Also write <name>.grpcmesh.go in the --go_out directory, package
+      Also write <name>.protomesh.go in the --go_out directory, package
       <name>, aliasing every generated Go identifier of the definitions tree: each message and enum
       type, each enum value, and each RPCService type, client, and targets
       value. <name> is the last element of the import path unless given after
@@ -94,7 +94,7 @@ Flags:
       directory, such as the module root when --go_out is a subdirectory.
       Needs --go-root-package.
   --ruby-root-module <Module>
-      Also write <snake_case(Module)>_grpcmesh.rb in the --ruby_out
+      Also write <snake_case(Module)>_protomesh.rb in the --ruby_out
       directory, requiring every generated Ruby file and defining module <Module> with a constant for
       every top-level message and enum, each RPCService, client, and targets
       constant, and ServiceMaps. A directory's option (mesh.root_prefix) is
@@ -127,7 +127,7 @@ func run(args []string, stdout, stderr io.Writer, spec func() (string, error)) i
 	if len(args) > 0 && args[0] == "proto-path" {
 		return protoPath(args[1:], stdout, stderr, spec)
 	}
-	fs := flag.NewFlagSet("grpc-service-mesh-gen", flag.ContinueOnError)
+	fs := flag.NewFlagSet("proto-service-mesh-gen", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	fs.Usage = func() { say(stderr, "%s", Usage) }
 	definitions := fs.String("definitions", "", "")
@@ -148,7 +148,7 @@ func run(args []string, stdout, stderr io.Writer, spec func() (string, error)) i
 		return 2
 	}
 	usage := func(msg string) int {
-		say(stderr, "grpc-service-mesh-gen: %s (see --help)\n", msg)
+		say(stderr, "proto-service-mesh-gen: %s (see --help)\n", msg)
 		return 2
 	}
 	if fs.NArg() > 0 {
@@ -208,7 +208,7 @@ func run(args []string, stdout, stderr io.Writer, spec func() (string, error)) i
 	}
 	written, err := generate(r, roots, rootDirs, opts, *meshOnly, specErr)
 	if err != nil {
-		say(stderr, "grpc-service-mesh-gen: %s\n", err)
+		say(stderr, "proto-service-mesh-gen: %s\n", err)
 		return 1
 	}
 	if log != nil {
@@ -222,12 +222,12 @@ func run(args []string, stdout, stderr io.Writer, spec func() (string, error)) i
 // protoPath prints the specification directory.
 func protoPath(args []string, stdout, stderr io.Writer, spec func() (string, error)) int {
 	if len(args) > 0 {
-		say(stderr, "grpc-service-mesh-gen: proto-path takes no arguments (see --help)\n")
+		say(stderr, "proto-service-mesh-gen: proto-path takes no arguments (see --help)\n")
 		return 2
 	}
 	dir, err := spec()
 	if err != nil {
-		say(stderr, "grpc-service-mesh-gen: %s\n", err)
+		say(stderr, "proto-service-mesh-gen: %s\n", err)
 		return 1
 	}
 	say(stdout, "%s\n", dir)
@@ -299,7 +299,7 @@ func generate(r *protoc.Runner, roots, rootDirs map[gen.Lang]string, opts gen.Op
 // descriptorSet runs the descriptor-set protoc run into a temporary file and
 // reads the set back.
 func descriptorSet(r *protoc.Runner, files []string) (*descriptorpb.FileDescriptorSet, error) {
-	f, err := os.CreateTemp("", "grpc-service-mesh-gen-*.pb")
+	f, err := os.CreateTemp("", "proto-service-mesh-gen-*.pb")
 	if err != nil {
 		return nil, err
 	}

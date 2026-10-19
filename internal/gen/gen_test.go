@@ -26,8 +26,8 @@ service AuditService { rpc Record(Entry) returns (Entry); }
 		got = append(got, string(o.Lang)+"/"+o.Path)
 	}
 	want := []string{
-		"go/shop/shop.grpcmesh.go", "go/shop/internal/internal.grpcmesh.go", "go/servicemaps/servicemaps.go",
-		"ruby/shop/shop_grpcmesh.rb", "ruby/shop/internal/internal_grpcmesh.rb", "ruby/service_maps.rb",
+		"go/shop/shop.protomesh.go", "go/shop/internal/internal.protomesh.go", "go/servicemaps/servicemaps.go",
+		"ruby/shop/shop_protomesh.rb", "ruby/shop/internal/internal_protomesh.rb", "ruby/service_maps.rb",
 	}
 	if len(got) != len(want) {
 		t.Fatalf("outputs %v", got)
@@ -65,8 +65,8 @@ func TestRender_RootFilesAtEachLanguageRoot(t *testing.T) {
 		got = append(got, p)
 	}
 	want := []string{
-		"go/shop/shop.grpcmesh.go", "go/servicemaps/servicemaps.go", "go/definitions.grpcmesh.go (root)",
-		"ruby/shop/shop_grpcmesh.rb", "ruby/service_maps.rb", "ruby/definitions_grpcmesh.rb (root)",
+		"go/shop/shop.protomesh.go", "go/servicemaps/servicemaps.go", "go/definitions.protomesh.go (root)",
+		"ruby/shop/shop_protomesh.rb", "ruby/service_maps.rb", "ruby/definitions_protomesh.rb (root)",
 	}
 	if !slices.Equal(got, want) {
 		t.Fatalf("outputs %v", got)
@@ -118,12 +118,12 @@ func TestWrite_PutsFilesUnderEachLanguageRoot(t *testing.T) {
 	roots := map[Lang]string{Go: filepath.Join(out, "golang"), Ruby: filepath.Join(out, "rb")}
 	paths, err := Write(roots, nil, []Output{
 		{Lang: Ruby, Path: "service_maps.rb", Content: []byte("ruby")},
-		{Lang: Go, Path: "shop/shop.grpcmesh.go", Content: []byte("go")},
+		{Lang: Go, Path: "shop/shop.protomesh.go", Content: []byte("go")},
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(paths) != 2 || paths[0] != filepath.Join(out, "rb", "service_maps.rb") || paths[1] != filepath.Join(out, "golang", "shop", "shop.grpcmesh.go") {
+	if len(paths) != 2 || paths[0] != filepath.Join(out, "rb", "service_maps.rb") || paths[1] != filepath.Join(out, "golang", "shop", "shop.protomesh.go") {
 		t.Fatalf("paths %v", paths)
 	}
 	b, err := os.ReadFile(paths[1])
@@ -136,17 +136,17 @@ func TestWrite_PutsRootFilesUnderTheRootDirectory(t *testing.T) {
 	out := t.TempDir()
 	roots := map[Lang]string{Go: filepath.Join(out, "gen"), Ruby: filepath.Join(out, "rb")}
 	paths, err := Write(roots, map[Lang]string{Go: out}, []Output{
-		{Lang: Go, Path: "shop/shop.grpcmesh.go", Content: []byte("go")},
-		{Lang: Go, Path: "definitions.grpcmesh.go", Content: []byte("root"), Root: true},
-		{Lang: Ruby, Path: "definitions_grpcmesh.rb", Content: []byte("ruby root"), Root: true},
+		{Lang: Go, Path: "shop/shop.protomesh.go", Content: []byte("go")},
+		{Lang: Go, Path: "definitions.protomesh.go", Content: []byte("root"), Root: true},
+		{Lang: Ruby, Path: "definitions_protomesh.rb", Content: []byte("ruby root"), Root: true},
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 	want := []string{
-		filepath.Join(out, "gen", "shop", "shop.grpcmesh.go"),
-		filepath.Join(out, "definitions.grpcmesh.go"),
-		filepath.Join(out, "rb", "definitions_grpcmesh.rb"),
+		filepath.Join(out, "gen", "shop", "shop.protomesh.go"),
+		filepath.Join(out, "definitions.protomesh.go"),
+		filepath.Join(out, "rb", "definitions_protomesh.rb"),
 	}
 	if !slices.Equal(paths, want) {
 		t.Fatalf("paths %v, want %v", paths, want)
@@ -172,9 +172,9 @@ service OrderService { rpc Get(Order) returns (Order); }
 	var goSrc, rubySrc string
 	for _, o := range outs {
 		switch o.Path {
-		case "definitions.grpcmesh.go":
+		case "definitions.protomesh.go":
 			goSrc = string(o.Content)
-		case "definitions_grpcmesh.rb":
+		case "definitions_protomesh.rb":
 			rubySrc = string(o.Content)
 		}
 	}

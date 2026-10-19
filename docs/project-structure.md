@@ -1,7 +1,7 @@
 # Definitions Project Structure
 
 
-The gRPC Service Mesh API convention for definitions projects is to have a `definitions` directory that the generator is
+The Proto Service Mesh API convention for definitions projects is to have a `definitions` directory that the generator is
 pointed at, with a top-level directory for each area of the service mesh, such as `shop` or `billing`. The name
 `definitions` is a convention; the generator takes the path of any directory. A top-level directory is a namespace. It
 names the proto package of its services, and sets the `transport` they are served over, as in the

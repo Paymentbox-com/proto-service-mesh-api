@@ -1,7 +1,7 @@
 # Options
 
 
-The gRPC Service Mesh API uses protobuf's `Options` feature to specify details about the services defined in `.proto`
+The Proto Service Mesh API uses protobuf's `Options` feature to specify details about the services defined in `.proto`
 files that cannot be specified by the protobuf syntax otherwise. These details include the `transport` intended to be used
 for any given set of services, the `Kind` a `Target` and `Endpoint`/`Subscriber` generated from a service `rpc` method
 should be, and a default `consumer_group` for any given `rpc` method. Deployment groups are not set in definitions. A
@@ -15,7 +15,7 @@ syntax = "proto3";
 package mesh;
 import "google/protobuf/descriptor.proto";
 
-option go_package = "github.com/Paymentbox-com/grpc-service-mesh-go/meshoptions";
+option go_package = "github.com/Paymentbox-com/proto-service-mesh-go/meshoptions";
 
 enum Kind {
   ROUTE = 0;
@@ -83,7 +83,7 @@ service OrderService {
 `mesh/options.proto` belongs to this specification and lives in this repository. A definitions project imports it by
 that path in its own `.proto` files. Its compiled forms ship with each language-specific implementation of this
 specification. The generator puts the directory of this repository at its own version on the import path of every
-`protoc` run, and `grpc-service-mesh-gen proto-path` prints that directory for plain `protoc` runs, as described under
+`protoc` run, and `proto-service-mesh-gen proto-path` prints that directory for plain `protoc` runs, as described under
 [Generator](generator.md#import-path).
 
 Until version 1.0, `mesh/options.proto` may change or remove options in a minor version. The latest version of this

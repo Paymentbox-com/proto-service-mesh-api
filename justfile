@@ -1,4 +1,4 @@
-# Task runner for grpc-service-mesh-api. Run `just` with no arguments to see the menu.
+# Task runner for proto-service-mesh-api. Run `just` with no arguments to see the menu.
 #
 # Every Go recipe runs through `mise exec` so it uses the toolchain pinned in
 # mise.toml without relying on the shell's mise activation. If you ever run just
@@ -23,12 +23,12 @@ test:
 # Compile and load the generated examples/shop code against the published libraries (needs network, go, bundle)
 [group('build')]
 test-integration:
-    GRPC_SERVICE_MESH_GEN_INTEGRATION=1 mise exec -- go test -race -count=1 ./internal/integration/...
+    PROTO_SERVICE_MESH_GEN_INTEGRATION=1 mise exec -- go test -race -count=1 ./internal/integration/...
 
 # Install the generator into GOBIN
 [group('build')]
 install:
-    {{go}} install ./cmd/grpc-service-mesh-gen
+    {{go}} install ./cmd/proto-service-mesh-gen
 
 # Regenerate the golden files under internal/gen/testdata/golden from examples/shop
 [group('build')]
@@ -87,7 +87,7 @@ release:
     test -z "$(git status --porcelain)" || (echo "commit or stash your changes first" && exit 1)
     git tag -a {{version}} -m "{{version}}"
     git push origin {{version}}
-    GOPROXY=https://proxy.golang.org GOFLAGS=-mod=mod {{go}} list -m github.com/Paymentbox-com/grpc-service-mesh-api@{{version}}
+    GOPROXY=https://proxy.golang.org GOFLAGS=-mod=mod {{go}} list -m github.com/Paymentbox-com/proto-service-mesh-api@{{version}}
 
 # Bump the version in VERSION by one patch, minor, or major step and commit that file: just bump patch
 [group('release')]
